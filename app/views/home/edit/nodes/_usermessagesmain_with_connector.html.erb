@@ -1,0 +1,45 @@
+<% if @node%>
+	<% if @node.set_next_action == "add_a_node"%>
+		<% connector_black_link_vertical = "connector_black_link_vertical_" + (@node.id).to_s%>
+		<% usermessagemain_partial = "usermessagemain_partial" + (@node.id).to_s%>
+		<% height = 53%>
+		<% for i in @node.children%>
+		<%if i.node_type == "user"%>
+			<% if i.name == nil && i.user_input_type == nil%>
+				<% height = height + 52%>
+			<%else%>
+				<%height = height + 108%>
+			<%end %>	
+		<% end %>
+		<% end %>
+		<% height = height.to_s + "px"%>
+
+		<div class="row">
+			<div class="connector_black_circle"></div>
+			<div class="connector_black_link"></div>
+			<div class="connector_black_link_vertical", id="<%= connector_black_link_vertical %>" style="margin-right: 15px; height:<%= height%>;"></div>	
+
+			<div id="<%= usermessagemain_partial %>">
+				<%= render 'home/edit/nodes/usermessagesmain'%>
+			</div>
+			<div>
+				<div>
+					<% for children in @node.children%>
+						<% if children.node_type == "user" %>
+						<% botresponse_and_usermessage_row = "botresponse_and_usermessage_row_" + (children.id).to_s%>	
+							<div class="row", id="<%= botresponse_and_usermessage_row%>">
+								<% connector_green_link_vertical = "connector_green_link_vertical_"+ (children.id).to_s %>
+								<% connector_green_link_partial = "connector_green_link_partial_" + (children.id).to_s%>
+								<div class="connector_green_link_vertical", id="<%= connector_green_link_vertical %>"></div>
+								<div class="connector_green_link_partial", id="<%= connector_green_link_partial %>"></div>
+								<div class="row", style="margin-bottom: 5px;">
+									<%= render 'home/edit/botresponse_and_usermessage_loop', parent_id: children.id %>
+								</div>						
+							</div>							
+						<%end%>
+					<%end%>
+				</div>			
+			</div>
+		</div>
+	<% end %>
+<% end %>

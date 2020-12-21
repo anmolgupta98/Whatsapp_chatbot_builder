@@ -1,0 +1,239 @@
+<% tag = 0%>
+<% if Node.where(bot_id: @bot.id, parent_id: parent_id).first%>
+	<% if Message.where(bot_id: @bot.id, node_id: @node.id)%>
+	<script src = "/assets/ckeditor/ckeditor.js" > </script>
+	<!-- start for loop -->
+		<% for message in Message.where(bot_id: @bot.id, node_id: @node.id)%>
+			<% tag = tag + 1%>
+			<% previousmessageckeditorid = "previousmessageckeditor_" + (message.id).to_s() %>
+            <% edit_message = "edit_message_" + (message.id).to_s() %>
+            <% send_text_message = "send_text_message_" + (message.id).to_s() %>
+            
+            <% text_area_message = "text_area_message_" + (message.id).to_s() %>
+            <% delete_text_message = "delete_text_message_" + (message.id).to_s() %>
+            <% previous_messages_rich_text = "previous_messages_rich_text_" + (message.id).to_s()%>
+            <% previous_messages_div_box = "previous_messages_div_box_" + (message.id).to_s()%>
+            <% delete_button_div_id_in_edit_view = "delete_button_div_id_in_edit_view_" + (message.id).to_s()%>
+
+			<%if message.message_type == "image"%>
+				<div class="mb-2 mt-2 p-1 border", style="width: 280px; margin-left: 11px;">
+					<div class="row">
+						<div class="col-5">
+							<%= image_tag('photo_preview_icon.png', size: "20", style:"margin-left:5px; margin-right: 10px;")%>
+							<%= image_tag(url_for(message.image), style: "width: 40px; height: 40px; border-radius:5px;")%>
+						</div>
+						<div class="col-6 image_name" >	
+							<% attachment_image = ActiveStorage::Attachment.find(message.image.id).filename %>
+							<% attachment_image = attachment_image.to_s%>
+							<%= truncate(attachment_image, length: 20)%>
+						</div>
+						<div class="col-2">
+							<% if delete_button == true%>
+							<%= link_to image_tag('dustbin.png', size: "10", class: ""), nodes_message_delete_path(message.id, @bot.id, @node.id), method: :delete ,remote: true, style: "margin-left: 3px;"%>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			<%elsif message.message_type == "video"%>	
+				<div class="mb-2 mt-2 p-1 border", style="width: 280px; margin-left: 11px;">
+					<div class="row">
+						<div class="col-5">
+							<%= image_tag('video_play_icon.png', size: "20", style:"margin-right: 10px; margin-top: -20px; margin-left: 5px;")%>
+							<%= video_tag(url_for(message.video), style: "width: 40px; height: 40px; border-radius:5px;") %>
+						</div>
+						<div class="col-6 image_name" >	
+							<% attachment_video = ActiveStorage::Attachment.find(message.video.id).filename %>
+							<% attachment_video = attachment_video.to_s%>
+							<%= truncate(attachment_video, length: 20)%>
+						</div>
+						<div class="col-2">
+							<% if delete_button == true%>
+							<%= link_to image_tag('dustbin.png', size: "10", class: ""), nodes_message_delete_path(message.id, @bot.id, @node.id), method: :delete ,remote: true, style: "margin-left: 3px;"%>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			<%elsif message.message_type == "pdf"%>	
+				<div class="mb-2 mt-2 p-1 border", style="width: 280px; margin-left: 11px;">
+					<div class="row">
+						<div class="col-5">
+							<%= image_tag('docicon.png', size: "20", style:"margin-right: 10px; margin-top: 5px; margin-left: 5px;")%>
+							<%= image_tag('pdf_preview_icon.png', height: "40", width: "30", style:"margin-right: 10px; margin-top: 5px; margin-left: 5px;")%>
+							
+						</div>
+						<div class="col-6 image_name" >	
+							<% attachment_pdf = ActiveStorage::Attachment.find(message.pdf.id).filename %>
+							<% attachment_pdf = attachment_pdf.to_s%>
+							<%= truncate(attachment_pdf, length: 20)%>
+						</div>
+						<div class="col-2">
+							<% if delete_button == true%>
+							<%= link_to image_tag('dustbin.png', size: "10", class: ""), nodes_message_delete_path(message.id, @bot.id, @node.id), method: :delete ,remote: true, style: "margin-left: 3px;"%>
+							<% end %>
+						</div>
+					</div>
+				</div>	
+			<%else%>
+				<% if delete_button == true%>					
+						<!--  -->	
+						<div class="previous_messages", style="width: 280px;" id= <%= previous_messages_div_box%>>			
+							<div class = "row" style="width: 300px;">
+		                        <div class = "col-12 hide" id = <%= text_area_message %>>
+		                            <%= form_with scope: :previous_text_messages, url:  ckeditor_text_messages_update_path(@node.id, @bot.id, message.id), method: :post, remote: true do |f|%>
+		                                <%= text_area(:previous_text_messages, :text_messages, cols: 35, class: ' rounded', id: previousmessageckeditorid,  value: raw(message.text_messages), style: "width: 400px;")%>
+		                                <%= f.submit "Update", class: "hide btn btn-outline-secondary btn-sm mr-4", style: "height: 30px; margin-top: 5px; margin-left: 200px; margin-bottom: 5px; text-align: right;" ,id: send_text_message, remote: true%>
+		                        	<% end %>
+		                        </div>	                        	                        	
+		                        <div class="col-8 mr-2" style="line-height: 1; word-break: break-all;" id= <%= previous_messages_rich_text %>>
+		                        	<%= raw(message.text_messages)%>
+		                        </div>
+		                          
+		                        <div class = "col-1 ml-1">
+		                            <%= link_to image_tag('editiconblack.png', size: "12", class: ""), ckeditor_text_messages_edit_icon_path(@node.id, @bot.id, message.id), method: :get, remote: true, id: edit_message %>
+		                        </div>
+		                        <div class = "col-1" id= <%= delete_button_div_id_in_edit_view%> >               
+		                            <%= link_to image_tag('dustbin.png', size: "12", class: ""), nodes_message_delete_path(message.id, @bot.id, @node.id),id: delete_text_message, method: :delete ,remote: true, class: ""%>
+		                        </div>	                        
+		                    </div>
+	                    </div>
+						<!--  -->
+				<% end %>
+				<%if delete_button == false%>
+					<div class="previous_messages", style="width: 280px;  word-break: break-all;">
+						<div class="row">
+							<div class="col-10" style="line-height: 1;">
+								<%= raw(message.text_messages)%>
+							</div>
+						</div>	
+					</div>
+				<%end%>
+			<%end%>
+		<% end %>
+	<!-- end for loop  -->
+	<!-- exit bot when at least a message is there -->
+		<%if delete_button == false && tag !=0 && @node.set_next_action == "exit_bot"%>
+			<div class="mb-2 Initial-Message-from-Customer">
+		 		<span class="mr-2 ml-3">
+					Include the default exit message					
+				</span>
+				<label class="switch my-auto">
+				  <% if @node.toggle_exit_message == true%>
+				    <input type="checkbox" checked data-remote="true" class="slider round" data-method="put" data-url= <%= toggle_exit_message_path(@node.id)%>>
+				  <% else %>
+				  	<input type="checkbox" data-remote="true" class="slider round" data-method="put" data-url= <%= toggle_exit_message_path(@node.id)%>>
+				  <% end %>
+				  <span class="slider round"></span>
+				</label>
+		 	</div>
+		 	<%if @node.toggle_exit_message == true%>
+		 	<div>
+		 		<div class="card_divider"></div> 	
+			 	<div class="previous_messages mt-2", style="width: 280px;">
+					<div class="row">
+						<div class="col-12">
+							<%= @node.exit_message%>
+						</div>					
+					</div>	
+				</div>
+		 	</div>
+		 	<%end%>
+		<%end%>
+	<!--transfer to agent when atleast a message is there  -->
+		<%if delete_button == false && tag !=0 && @node.set_next_action == "transfer_to_agent"%>
+			<div class="mb-2 Initial-Message-from-Customer">
+		 		<span class="mr-2 ml-3">
+					Include the transfering message					
+				</span>
+				<label class="switch my-auto">
+				  <% if @node.toggle_transfer_to_agent_message == true%>
+				    <input type="checkbox" checked data-remote="true" class="slider round" data-method="put" data-url= <%= toggle_transfer_to_agent_message_path(@node.id)%>>
+				  <% else %>
+				  	<input type="checkbox" data-remote="true" class="slider round" data-method="put" data-url= <%= toggle_transfer_to_agent_message_path(@node.id)%>>
+				  <% end %>
+				  <span class="slider round"></span>
+				</label>
+		 	</div>
+		 	<%if @node.toggle_transfer_to_agent_message == true%>
+		 	<div>
+		 		<div class="card_divider"></div> 	
+			 	<div class="previous_messages mt-2", style="width: 280px;">
+					<div class="row">
+						<div class="col-12">
+							<%= @node.transfer_to_agent_message%>
+						</div>					
+					</div>	
+				</div>
+		 	</div>
+		 	<%end%>
+		<%end%>
+	<!-- exit and transfer when no message is there -->
+		<% if delete_button == false && tag==0%>
+		 	<div class="ml-2 mb-4 Initial-Message-from-Customer">
+		 		No custom messages are added here. Click the expanded icon to see full options.
+		 	</div>
+		 	<% if @node.set_next_action == "exit_bot"%>
+			 	<div>
+			 		<div class="card_divider"></div>
+			 		<div class="ml-1 mb-2 text-center Initial-Message-from-Customer">
+				 		This exit message is added by default.
+				 	</div>			 	
+				 	<div class="previous_messages mt-2", style="width: 280px;">
+						<div class="row">
+							<div class="col-12">
+								<%= @node.exit_message%>
+							</div>					
+						</div>	
+					</div>
+			 	</div>	
+			<%elsif @node.set_next_action == "transfer_to_agent"%> 
+				<div>
+			 		<div class="card_divider"></div>
+			 		<div class="ml-1 mb-2 text-center Initial-Message-from-Customer">
+				 		Default message when transferring to agent.
+				 	</div>			 	
+				 	<div class="previous_messages mt-2", style="width: 280px;">
+						<div class="row">
+							<div class="col-12">
+								<%= @node.transfer_to_agent_message%>
+							</div>					
+						</div>	
+					</div>
+			 	</div>
+			<%elsif @node.set_next_action == "link_to_node"%> 
+				<div>
+			 		<div class="card_divider"></div>
+			 		<div class="ml-1 mb-2 text-center Initial-Message-from-Customer">
+				 		Default linking to node message.
+				 	</div>			 	
+				 	<div class="previous_messages mt-2", style="width: 280px;">
+						<div class="row">
+							<div class="col-12">
+								<%= @node.link_to_node_message%>
+							</div>					
+						</div>	
+					</div>
+			 	</div> 			 		
+		 	<% end %>
+		<% end %>
+	<!-- additional info for transfering agent group  -->
+		<%if delete_button == false && @node.set_next_action == "transfer_to_agent"%>
+		 	<div>
+		 		<div class="card_divider mt-2"></div>
+		 		<div class="ml-1 mb-1 text-center Initial-Message-from-Customer">
+			 		Transfering to : <b>Group-1</b>
+			 	</div>			 	
+		 	</div>		 		
+		<%end%>
+	<!-- additional info for link to another node -->
+		<%if delete_button == false && @node.set_next_action == "link_to_node"%>
+		 	<div>
+		 		<div class="card_divider mt-2"></div>
+		 		<div class="ml-1 mb-1 text-center Initial-Message-from-Customer">
+			 		Linking to : <b><%= truncate(Node.find(@node.link_to_node).name, length: 20)%></b>
+			 	</div>			 	
+		 	</div>		 		
+		<%end%>
+	<!-- additional info over -->
+	<% end %>
+<% end %>
+

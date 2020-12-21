@@ -1,0 +1,116 @@
+
+<div class="row" , id="width_setting_row" , style= "width:4500px;">
+	<%= render 'home/edit/nodes/triggerphrasesmain'%>
+	<div class="connector_green_circle "></div>
+	<div class="connector_green_link"></div>
+	<%= render 'home/edit/botresponse_and_usermessage_loop', parent_id: parent_id%>
+</div>
+
+<script type="text/javascript">
+			
+	<% def changing_links (parent_node_id, count, number_of_children) %>
+		console.log('<%=parent_node_id%>');
+		<% node = Node.find(parent_node_id)%>
+
+		<%if node.parent_id != 0%>
+			<% botresponse_and_usermessage_row = "botresponse_and_usermessage_row_" + (node.parent_id).to_s%>
+			<% connector_green_link_vertical = "connector_green_link_vertical_"+ (node.parent_id).to_s %>
+			<% connector_green_link_partial = "connector_green_link_partial_" + (node.parent_id).to_s%>
+			<% connector_green_link_compressed_id = "connector_green_link_compressed_id_" + (node.parent_id).to_s%>
+			<% connector_green_link_define_id = "connector_green_link_define_id_" + (node.parent_id).to_s%>
+			<% connector_green_link_expanded_id = "connector_green_link_expanded_id_" + (node.parent_id).to_s%>
+
+			console.log(<%= node.id %>);
+			console.log('<%= count%>');
+			console.log('<%= number_of_children%>');
+			console.log('<%= botresponse_and_usermessage_row%>');
+			console.log('<%= connector_green_link_vertical%>');
+			console.log('<%= connector_green_link_partial%>');
+			console.log('<%= connector_green_link_compressed_id%>');
+			console.log('<%= connector_green_link_define_id%>');
+			console.log('<%= connector_green_link_expanded_id%>');
+
+			count = '<%= count%>';
+			count = parseInt(count);
+			number_of_children = '<%= number_of_children%>';
+			number_of_children = parseInt(number_of_children);
+
+			<%if count == 1%>
+				height = 0;
+				width = document.getElementById('<%= connector_green_link_partial%>').offsetWidth;
+				margin_left = -2;
+			<%else%>
+				<% white_node = Node.find(node.parent_id)%>
+				<% previous_green_node = Node.find(white_node.parent_id)%>
+				console.log(<%= previous_green_node.id%>);
+
+				height = 0;
+				<% count_for_height = 0 %>
+				<% for child_nodes in previous_green_node.children %>
+					<%count_for_height = count_for_height + 1%>
+					<% if count_for_height < count %>
+						<% botresponse_and_usermessage_row_trail = "botresponse_and_usermessage_row_" + (child_nodes.id).to_s%>
+						<% compressed_define_nodes_id = "compressed_define_nodes_id_" + (child_nodes.id).to_s%>
+						<% define_nodes_id = "define_nodes_id_" + (child_nodes.id).to_s%>
+						<% expanded_define_nodes_id = "expanded_define_nodes_id_" + (child_nodes.id).to_s%>
+
+						if (!(document.getElementById('<%= compressed_define_nodes_id%>').classList.contains('hide'))){
+							user_message_height = document.getElementById('<%= compressed_define_nodes_id%>').offsetHeight;
+						}
+						if (!(document.getElementById('<%= define_nodes_id%>').classList.contains('hide'))){
+							user_message_height = document.getElementById('<%= define_nodes_id%>').offsetHeight;
+						}
+						if (!(document.getElementById('<%= expanded_define_nodes_id%>').classList.contains('hide'))){
+							user_message_height = document.getElementById('<%= expanded_define_nodes_id%>').offsetHeight;
+						}
+
+						height = height - user_message_height - 8 + document.getElementById('<%= botresponse_and_usermessage_row_trail%>').offsetHeight;
+					<%end%>	
+				<%end%>
+
+				width = 10 + (count-1)*5;
+				margin_left = 0;
+			<%end%>
+
+			console.log(height);
+			console.log(width);
+
+			width_of_green_link_define = document.getElementById('<%= connector_green_link_define_id%>').offsetWidth;
+			width_of_green_link_compressed = document.getElementById('<%= connector_green_link_compressed_id%>').offsetWidth;
+			width_of_green_link_expanded = document.getElementById('<%= connector_green_link_expanded_id%>').offsetWidth;
+
+			width_of_green_link_expanded = width_of_green_link_expanded + (number_of_children-count)*5;
+			width_of_green_link_define = width_of_green_link_define + (number_of_children-count)*5;
+			width_of_green_link_compressed = width_of_green_link_compressed + (number_of_children-count)*5;
+
+			document.getElementById('<%= connector_green_link_define_id%>').style.width = width_of_green_link_define + "px";
+			document.getElementById('<%= connector_green_link_compressed_id%>').style.width = width_of_green_link_compressed + "px";
+			document.getElementById('<%= connector_green_link_expanded_id%>').style.width = width_of_green_link_expanded + "px";
+
+			document.getElementById('<%= connector_green_link_vertical%>').style.height = height + "px";
+			document.getElementById('<%= connector_green_link_vertical%>').style.marginTop = 21 - height + "px";
+			document.getElementById('<%= connector_green_link_vertical%>').style.marginLeft = 29 - (count-1)*5 + "px";
+			document.getElementById('<%= connector_green_link_partial%>').style.width = width + "px";
+			document.getElementById('<%= connector_green_link_partial%>').style.marginLeft = margin_left + "px";
+		<%end%>
+
+		<%number_of_children = 0%>
+		<% for child in Node.where(bot_id: @bot.id, parent_id: parent_node_id) %>
+			<%number_of_children = number_of_children + 1%>
+		<%end%>
+
+		<%count = 0%>
+		<% for child in Node.where(bot_id: @bot.id, parent_id: parent_node_id) %>
+			<%count = count + 1%>
+			<%if child.children.first%>
+				<% changing_links(child.children.first.id, count, number_of_children) %>
+			<%end%>	
+		<%end%>
+
+	<%end%>
+
+	<% main_node = Node.where(bot_id: @bot.id, parent_id: 0).first%>
+	<%if main_node %>
+		<% changing_links(main_node.id, 1, 0) %>
+	<%end%>	
+</script>	

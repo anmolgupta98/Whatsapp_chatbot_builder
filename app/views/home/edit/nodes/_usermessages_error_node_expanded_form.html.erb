@@ -1,0 +1,192 @@
+<% @error_node = Node.where(bot_id: @bot.id, parent_id: @node.id, node_type: "error").first %>
+<% if message != "default"%>
+	<% message_id = message.id%>
+<%else%>
+	<% message_id = "default"%>
+<%end%>	
+
+<!-- form for each error - variables-->
+<% error_message = "error_message_" + (@error_node.id).to_s + "_"+(message_id).to_s%>			
+<% transfer_to_agent = "transfer_to_agent_" + (@error_node.id).to_s + "_"+(message_id).to_s%>			
+<% link_to_node = "link_to_node_" + (@error_node.id).to_s + "_"+(message_id).to_s%>			
+<% exit_message = "exit_message_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+
+<% error_message_text_area = "error_message_text_area_" + (@error_node.id).to_s + "_"+(message_id).to_s%>
+<% transfer_to_agent_text_and_dropdown = "transfer_to_agent_text_and_dropdown_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% link_to_node_text_and_dropdown = "link_to_node_text_and_dropdown" + (@error_node.id).to_s + "_"+(message_id).to_s%>
+<% exit_message_text_area = "exit_message_text_area" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% transfer_to_agent_text_and_dropdown_id = "transfer_to_agent_text_and_dropdown_id_" + (@error_node.id).to_s + "_"+(message_id).to_s%>
+<% link_to_node_text_and_dropdown_id = "link_to_node_text_and_dropdown_id_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% submit_button_for_form = "submit_button_for_form_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<!-- for uniqueness -->
+<% error_node_error_message_text_area_id_changed = "error_node_error_message_text_area_id_changed_" + (@error_node.id).to_s + "_"+(message_id).to_s  %>
+<% error_node_error_message_text_area_id_default = "error_node_error_message_text_area_id_default_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_transfer_agent_text_area_id_changed = "error_node_transfer_agent_text_area_id_changed_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_transfer_agent_text_area_id_default = "error_node_transfer_agent_text_area_id_default_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_link_node_text_area_id_changed = "error_node_link_node_text_area_id_changed_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_link_node_text_area_id_default = "error_node_link_node_text_area_id_default_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_exit_message_text_area_id_changed = "error_node_exit_message_text_area_id_changed_" + (@error_node.id).to_s + "_"+(message_id).to_s %>
+<% error_node_exit_message_text_area_id_default = "error_node_exit_message_text_area_id_default_"  + (@error_node.id).to_s + "_"+(message_id).to_s%>
+
+<!-- for each error - actual form -->
+
+<%= form_with scope: :error_node, url: error_node_message_save_path(@error_node.id, message_id), method: :post, remote: true do |f| %>
+<!-- error message -->
+	<div class="mt-1">
+		<%= f.radio_button :error_node , "error_message", id: error_message, checked: "checked", onchange: "submit_error_form('#{message_id}');" %>
+		<%= f.label :error_node , "Send error message", value: "error_message" , class: "ml-2 error_message_text"%>
+	</div>
+	<div class="ml-3 mt-2 mb-2" id= <%= error_message_text_area%>>
+		<%if message != "default" && message.error_node_message%> 
+			<%= text_area(:error_node, :error_node_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: message.error_node_message, id: error_node_error_message_text_area_id_changed, onchange: "submit_error_form('#{message_id}');")%>
+		<%else%>
+			<%= text_area(:error_node, :error_node_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: "I did not understand what you have said. Please rephrase it.", id: error_node_error_message_text_area_id_default, onchange: "submit_error_form('#{message_id}');")%>
+		<%end%>
+	</div>
+<!-- transfer to agent -->
+	<div class="mt-1">
+		<%= f.radio_button :error_node , "transfer_to_agent", id: transfer_to_agent , onchange: "submit_error_form('#{message_id}');" %>
+		<%= f.label :error_node , "Transfer to an agent", value: "transfer_to_agent" , class: "ml-2 error_message_text"%>
+	</div>
+	<div class="hide" id= <%= transfer_to_agent_text_and_dropdown%>>
+		<div class="dropdown show mb-2 ml-3">
+		  <a class="btn btn-outline-secondary btn-sm dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false", style="width: 215px; background-color: transparent; color: grey; border-color: grey;" id= <%= transfer_to_agent_text_and_dropdown_id%>>
+		    Transfer to group
+		  </a>
+		  <div class="dropdown-menu" aria-labelledby=<%= transfer_to_agent_text_and_dropdown_id%>, style="width: 215px;">					  	
+		  	<a class="dropdown-item" href= <%= root_path %> >Group -1</a>
+		  	<a class="dropdown-item" href= <%= root_path %> >Group -2</a>
+		  	<a class="dropdown-item" href= <%= root_path %> >Group -3</a>					    			    
+		  </div>
+		</div>
+		<div class="ml-3 mt-2 mb-2">
+			<%if message != "default" && message.error_node_transfer_to_agent_message%> 
+				<%= text_area(:error_node, :error_node_transfer_to_agent_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: message.error_node_transfer_to_agent_message, id: error_node_transfer_agent_text_area_id_changed, onchange: "submit_error_form('#{message_id}');")%>
+			<%else%>
+				<%= text_area(:error_node, :error_node_transfer_to_agent_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: "Transferring to an agent group", id: error_node_transfer_agent_text_area_id_default, onchange: "submit_error_form('#{message_id}');")%>
+			<%end%>	
+		</div>
+	</div>
+<!-- link to node -->
+	<div class="mt-1">
+		<%= f.radio_button :error_node , "link_to_node", id: link_to_node , onchange: "submit_error_form('#{message_id}');" %>
+		<%= f.label :error_node , "Link to another node", value: "link_to_node" , class: "ml-2 error_message_text"%>
+	</div>
+	<div class="hide" id= <%= link_to_node_text_and_dropdown%>>
+		<div class="dropdown show mb-2 ml-3">
+		<%if message_id != 'default'%>	
+		  <%= f.select(:error_node_link_to_node, Node.where(bot_id: @bot.id, node_type: "bot").collect { |p| [ truncate(p.name, length: 25), p.id ] },{}, id: link_to_node_text_and_dropdown_id, class: "btn btn-outline-secondary btn-sm dropdown-toggle text-center", style: "width: 215px; background-color: transparent; color: grey; border-color: grey;", onchange:"submit_error_form('#{message_id}');") %>
+		  	
+		<%end%>  
+		</div>
+		<div class="ml-3 mt-2 mb-2">
+			<%if message != "default" && message.error_node_link_to_message%>
+				<%= text_area(:error_node, :error_node_link_to_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: message.error_node_link_to_message, id: error_node_link_node_text_area_id_changed, onchange: "submit_error_form('#{message_id}');")%>
+			<%else%>
+				<%= text_area(:error_node, :error_node_link_to_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: "Ok. Lets start from the beginning", id: error_node_link_node_text_area_id_default, onchange: "submit_error_form('#{message_id}');")%>
+			<%end%>	
+		</div>
+	</div>
+<!-- exit message -->
+	<div class="mt-1">
+		<%= f.radio_button :error_node , "exit_message", id: exit_message , onchange: "submit_error_form('#{message_id}');" %>
+		<%= f.label :error_node , "Exit conversation", value: "exit_message" , class: "ml-2 error_message_text"%>
+	</div>
+	<div class="ml-3 mt-2 mb-2 hide" id= <%= exit_message_text_area%>>
+		<%if message != "default" && message.error_node_exit_message%>
+			<%= text_area(:error_node, :error_node_exit_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: message.error_node_exit_message , id: error_node_exit_message_text_area_id_changed, onchange: "submit_error_form('#{message_id}');")%>
+		<%else%>
+			<%= text_area(:error_node, :error_node_exit_message, cols: 28, rows: 2, class: ' error_node_message_text_area error_node_message_text_area_text', value: "Sorry, I did not get what you said. Exiting the conversation." , id: error_node_exit_message_text_area_id_default, onchange: "submit_error_form('#{message_id}');")%>
+		<%end%>	
+	</div>
+
+	<div class="text-center">
+		<%= f.submit "Update the error attempt", class: "hide btn btn-sm btn-outline-secondary mt-2", style: "color: grey; width: 180px;", id: submit_button_for_form%>
+	</div>
+<!-- end of actual form -->
+<% end %>
+
+<script type="text/javascript">
+
+	function submit_error_form(message_id_for_function){
+		console.log('form submit');
+		console.log(message_id_for_function);
+		<% submit_button_for_form = "submit_button_for_form_" + (@error_node.id).to_s + "_"%>
+
+		str = '<%= submit_button_for_form%>';
+		str = str + message_id_for_function;
+
+		console.log(str);
+		document.getElementById(str).click();
+
+	}
+
+	<%if message != "default"%>
+	<%if message.error_node == "error_message"%>
+		document.getElementById('<%= error_message %>').checked = true;
+		document.getElementById('<%= transfer_to_agent %>').checked = false;
+		document.getElementById('<%= link_to_node %>').checked = false;
+		document.getElementById('<%= exit_message%>').checked = false;
+
+		document.getElementById('<%= error_message_text_area%>').classList.remove('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');
+	<%elsif message.error_node == "transfer_to_agent"%>
+		document.getElementById('<%= error_message %>').checked = false;
+		document.getElementById('<%= transfer_to_agent %>').checked = true;
+		document.getElementById('<%= link_to_node %>').checked = false;
+		document.getElementById('<%= exit_message%>').checked = false;
+
+		document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.remove('hide');			
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');
+	<%elsif message.error_node == "link_to_node"%>
+		document.getElementById('<%= error_message %>').checked = false;
+		document.getElementById('<%= transfer_to_agent %>').checked = false;
+		document.getElementById('<%= link_to_node %>').checked = true;
+		document.getElementById('<%= exit_message%>').checked = false;
+
+		document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.remove('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');	
+	<%elsif message.error_node == "exit_message"%>
+		document.getElementById('<%= error_message %>').checked = false;
+		document.getElementById('<%= transfer_to_agent %>').checked = false;
+		document.getElementById('<%= link_to_node %>').checked = false;
+		document.getElementById('<%= exit_message%>').checked = true;
+
+		document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.remove('hide');
+	<%end%>
+	<%end%>
+
+	document.getElementById('<%= error_message %>').onclick = function() {
+		document.getElementById('<%= error_message_text_area%>').classList.remove('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');
+	}
+	document.getElementById('<%= transfer_to_agent %>').onclick = function() {
+		document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.remove('hide');			
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');
+	}
+	document.getElementById('<%= link_to_node %>').onclick = function() {
+		document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.remove('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.add('hide');
+	}
+	document.getElementById('<%= exit_message %>').onclick = function() {
+	 	document.getElementById('<%= error_message_text_area%>').classList.add('hide');
+		document.getElementById('<%= transfer_to_agent_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= link_to_node_text_and_dropdown%>').classList.add('hide');			
+		document.getElementById('<%= exit_message_text_area%>').classList.remove('hide');
+	}
+</script>

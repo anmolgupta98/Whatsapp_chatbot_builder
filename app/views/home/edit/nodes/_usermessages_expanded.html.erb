@@ -1,0 +1,154 @@
+<% expanded_define_id = "expanded_define_nodes_id_" + child.id.to_s %>
+<% usermessage_name_edit_name = "usermessage_name_edit_name_" + child.id.to_s%>
+<% usermessage_name_edit_form = "usermessage_name_edit_form_" + child.id.to_s%>
+<% usermessage_message_id = "usermessage_message_id_" + child.id.to_s%>
+<% usermessage_message_partial_id = "usermessage_message_partial_id_" + child.id.to_s%>
+<% usermessage_message_form_submit_button_id = "usermessage_message_form_submit_button_id_" + child.id.to_s%>
+<% usermessage_adding_trigger_phrases_id = "usermessage_adding_trigger_phrases_id_" + child.id.to_s%>
+<% usermessage_message_user_input_dropdown_id = "usermessage_message_user_input_dropdown_id_" + child.id.to_s%>
+<% connector_green_link_expanded_id = "connector_green_link_expanded_id_" + child.id.to_s%>
+<% usermessages_messages_node_type = 'usermessages_messages_node_type_' + child.id.to_s%>
+<% usermessages_messages_node_id = 'usermessages_messages_node_id_' + child.id.to_s%>
+<% usermessages_messages_bot_id = 'usermessages_messages_bot_id_' + child.id.to_s%>
+<% usermessages_name_edit_default = 'usermessages_name_edit_default_' + child.id.to_s %>
+<% usermessages_name_edit_changed = 'usermessages_name_edit_changed_' + child.id.to_s %>
+
+<div class="row mb-2 hide" id= <%= expanded_define_id%> >
+	<div class="connector_black_link"></div>	
+	<div class = "usermessage_expanded_white_box">
+		<div class = "row", style="height: 35px;" >
+			<div class = "col-9 ml-3 mt-2 mb-3" id= <%= usermessage_name_edit_name%>>
+				<%= render 'home/edit/nodes/usermessages_name_field', child: child%>	
+			</div>
+			<div class="col-9 ml-3 mt-2 mb-3 hide" id= <%= usermessage_name_edit_form %> >
+				<%= form_with scope: :name_edit, url: usermessage_name_update_path(child.id), method: :put, remote: true do |f|%>					
+					<%if child.name %>
+						<%= f.text_field :name,id: usermessages_name_edit_changed, value: child.name ,class: "form__input", style: "width: 120px;"%>
+					<% else %>	
+						<%= f.text_field :name,id: usermessages_name_edit_default, class: "form__input", placeholder: "User Message", style: "width: 120px;"%>
+					<% end %>						
+					<%= f.submit "Update", class: "btn btn-sm btn-outline-secondary"%>
+				<% end %>				
+			</div>
+			<div class = "col-2 text-right mt-2">
+	            <%= link_to image_tag('dustbin.png', size: "15"), usermessage_node_delete_path(child.id, "expanded"), method: :delete, remote: true, data: { confirm: "Are you sure that you want to delete this node? This will delete all the children nodes attached to it. You can edit the current node, if you wanted to."}%>
+			</div>
+	    </div>  
+
+		<div class="row card_divider mt-2 ml-0"></div>
+		
+
+		<%= form_with scope: :child_options, url: usermessage_options_form_path(child.id), method: :put,  remote: true do |f| %>
+			
+			<div class= " row Node-text-font mt-3 ml-3">				
+				Expected input type
+			</div>
+			<div class=" row ml-3 mt-2" >
+				<%= f.select :user_input_type, [['Text','text'],['Phone number', 'phone_number'],['Email', 'email'],['Image','image'],['Document','document'],['Location','location'], ['Pincode', 'pincode']], {}, {style: "width: 269px; border-radius: 5px; padding: 3px;", class: "mt-2", id: usermessage_message_user_input_dropdown_id, onchange: "changed_user_input_type('#{child.parent_id}');"} %>
+			</div>
+				
+			<%= f.submit "Save", value: "Save", class: "hide btn btn-outline-secondary mb-3", style: "width: 270px;", id: usermessage_message_form_submit_button_id%>
+            
+		<% end %>
+		<div id= <%= usermessage_adding_trigger_phrases_id %>>
+			<div class="row ml-3 mt-3 Node-text-font  p-2 usermessage_trigger_phrases", style="height: 100px; width: 270px; overflow-y: auto; overflow-x: hidden;">
+				<div id= <%= usermessage_message_partial_id%> >				
+					<%= render 'home/edit/nodes/usermessages_message_previous', child: child, delete_button: true%>
+				</div>
+			</div>
+			<%= form_with scope: :messages, url: usermessage_messages_create_path, method: :post,  remote: true do |f| %>		
+			<div class="row usermessage_trigger_phrases ml-3 mb-3", style="width: 270px;" >	   
+				<%= f.text_field :bot_id, class: "hide",id: usermessages_messages_bot_id, value: child.bot_id%>
+				<%= f.text_field :node_id, class: "hide",id: usermessages_messages_node_id, value: child.id%>	
+				<%= f.text_field :node_type, class: "hide",id: usermessages_messages_node_type , value: "user"%>	
+				<div class="col-7">
+					<%= f.text_field :text_messages, class: "text-left form__input p-2 mt-1 usermessage_trigger_phrases", placeholder:  "Add trigger words", id: usermessage_message_id%>
+				</div>					
+				<div class = "col-1 mb-2 mt-1">
+					<%= f.submit "Add", class: "submit-text usermessage_trigger_phrases" %>					
+				</div>			
+			</div>
+			<% end %>
+		</div>
+
+		<div class="row mb-3 ml-0 mt-2">
+			<div class="Node-text-font ml-3 mt-1">
+				Advanced Settings
+			</div>
+			<div class=" ml-2">
+				<%= link_to image_tag('downarrow.png', size: "10", class: "rounded-circle"), root_path %>
+			</div>
+		</div>
+
+		<div class="mb-2 text-center">
+            <button class = "btn btn-outline-secondary mb-3", style = "width: 270px;", onclick= "usermessage_message_submit_form('<%= child.id %>')">Save</button>
+        </div>
+
+	</div>
+	<div class="connector_green_circle "></div>
+	<div class="connector_green_link", id="<%= connector_green_link_expanded_id %>"></div>
+</div>
+
+
+<script type="text/javascript">
+	for(var i=0; i< document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options.length; i++){
+		document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options[i].selected = false;
+		if (document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options[i].value == '<%= child.user_input_type %>'){
+			document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options[i].selected = true;
+		}
+	}
+
+	function usermessage_message_submit_form(id){
+		<% usermessage_message_form_submit_button_id = "usermessage_message_form_submit_button_id_" %>
+		usermessage_message_form_submit_button_id = '<%= usermessage_message_form_submit_button_id %>';
+		usermessage_message_form_submit_button_id = usermessage_message_form_submit_button_id + id;
+		console.log(usermessage_message_form_submit_button_id);
+
+		document.getElementById(usermessage_message_form_submit_button_id).click();
+	}
+
+	function changed_user_input_type(parent_id){
+		console.log(parent_id);
+		console.log('jjj');
+		<% parent_id = Node.find(child.parent_id).id %>
+		<% connector_black_link_vertical = "connector_black_link_vertical_" + parent_id.to_s%>
+		<% height = 53%>
+		<% for i in Node.find(child.parent_id).children%>
+		<%if i.node_type == "user"%>
+			<% if i.name == nil && i.user_input_type == nil%>
+				<% height = height + 52%>
+			<%else%>
+				<%height = height + 108%>
+			<%end %>	
+		<% end %>
+		<% end %>
+		<% height = height + 297%>
+		<% height = height.to_s + "px"%>
+		height = "<%= height%>";
+		height = parseInt(height);
+		console.log(height);
+
+		for(var i=0; i< document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options.length; i++){
+			if (document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options[i].selected == true){
+				selected_value = document.getElementById('<%= usermessage_message_user_input_dropdown_id%>').options[i].value;
+			}
+		}
+		console.log(selected_value);
+
+		if (selected_value == "text"){
+			document.getElementById('<%= usermessage_adding_trigger_phrases_id%>').classList.remove('hide');
+			document.getElementById('<%= connector_black_link_vertical %>').style.height =  height + "px";
+			document.getElementById('<%= usermessage_message_partial_id %>').innerHTML = "<%= j render 'home/edit/nodes/usermessages_message_previous', child: child, delete_button: true %>";
+		}
+		else{
+			document.getElementById('<%= usermessage_adding_trigger_phrases_id%>').classList.add('hide');
+			height = height - 167;	
+			console.log(height);
+			document.getElementById('<%= connector_black_link_vertical %>').style.height =  height + "px";
+			document.getElementById('<%= usermessage_message_partial_id %>').innerHTML = "<%= j render 'home/edit/nodes/usermessages_message_previous', child: child, delete_button: true%>";
+
+		}
+
+	}
+
+</script>

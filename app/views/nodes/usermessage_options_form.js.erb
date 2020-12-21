@@ -1,0 +1,34 @@
+//console.log('options');
+<% connector_black_link_vertical = "connector_black_link_vertical_" + (@node.id).to_s%>
+<% expanded_define_id = "expanded_define_nodes_id_" + @id.to_s %>
+<% compressed_define_id = "compressed_define_nodes_id_" + @id.to_s %>
+<% compressed_define_name_id = "compressed_define_nodes_name_id_" + @id.to_s %>
+<% @child = Node.find(@id)%>
+<% usermessage_message_compressed_partial_id = "usermessage_message_compressed_partial_id_" + (@child.id).to_s%>
+<% usermessage_message_partial_id = "usermessage_message_partial_id_" + (@child.id).to_s%>
+
+document.getElementById('<%= expanded_define_id%>').classList.add('hide');
+document.getElementById('<%= compressed_define_id%>').classList.remove('hide');
+document.getElementById('<%= compressed_define_name_id%>').innerHTML = "<%= j render 'home/edit/nodes/usermessages_compressed_name', child: @child%>";
+console.log('<%= @id%>');
+height = document.getElementById('<%= connector_black_link_vertical %>').style.height;
+height = parseInt(height);
+
+<% height = 53%>
+<% for i in @node.children%>
+<%if i.node_type == "user"%>
+	<% if i.name == nil && i.user_input_type == nil%>
+		<% height = height + 52%>
+	<%else%>
+		<%height = height + 108%>
+	<%end %>	
+<% end %>
+<% end %>
+<% height = height.to_s + "px"%>
+height = "<%= height%>";
+height = parseInt(height);
+
+document.getElementById('<%= connector_black_link_vertical %>').style.height =  height + "px";
+document.getElementById('<%= usermessage_message_compressed_partial_id %>').innerHTML = "<%= j render 'home/edit/nodes/usermessages_message_previous', child: @child, delete_button: false%>";
+document.getElementById('<%= usermessage_message_partial_id %>').innerHTML = "<%= j render 'home/edit/nodes/usermessages_message_previous', child: @child, delete_button: true %>";
+

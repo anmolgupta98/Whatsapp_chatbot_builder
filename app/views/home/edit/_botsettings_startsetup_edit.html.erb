@@ -1,0 +1,35 @@
+<div class="container">
+	<h3 class = "botsettings_heading">Bot Settings</h3>
+    <div class = "mt-4">
+        <div id = "Outgoingnumber" class = "mb-3">
+            <%=  render 'home/edit/botsettings_outgoingnumber' %>
+        </div>
+        <div id = "Botlanguage" class = "mb-3">
+           <%= render 'home/edit/botsettings_botlanguage' %>
+        </div> 
+        <div  id = "Conversationstarter" class = "mb-3">    
+            <%= render 'home/edit/botsettings_conversationstarter' %>
+        </div>  
+        <div  id = "Bottrigger" class = "mb-3"> 
+            <%= render 'home/edit/botsettings_bottrigger' %>
+        </div>  
+        <div  id = "NoCustomerResponse" class = "mt-0">   
+           <%= render 'home/edit/botsettings_noCustomerResponse' %>
+        </div>    
+    </div>  
+</div>
+
+<script type="text/javascript">
+    <%if @bot.language == nil %>
+        document.getElementById('Botlanguage').classList.add('hide');
+    <%end%>
+    <%if @bot.initconv == nil %>
+        document.getElementById('Conversationstarter').classList.add('hide');
+    <%end%>
+    <%if @bot.triggerpoint == nil %>
+        document.getElementById('Bottrigger').classList.add('hide');
+    <%end%>
+    <%if @bot.reminder == nil %>
+        document.getElementById('NoCustomerResponse').classList.add('hide');
+    <%end%>
+</script>

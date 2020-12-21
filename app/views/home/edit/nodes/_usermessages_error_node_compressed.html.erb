@@ -1,0 +1,77 @@
+<div class="row">
+	<div class="col-1 text-center mt-2 ml-2">
+		<%= image_tag('redflash.JPG', size: "14", class: "rounded-circle")%>
+	</div>
+	<div class="col-8 mt-2", style="padding-right: 5px;">
+		Error Response
+	</div>
+	<div class="col-2">
+		<%= link_to image_tag('expand.png', size: "15", class: "mt-2"), error_message_expand_icon_path(@node.id), remote: true%>
+	</div>
+
+	<% if Node.where(node_type: "error", parent_id: @node.id).first%>
+	<% @error_node = Node.where(node_type: "error", parent_id: @node.id).first%>
+	<% error_message_link_to_group_name = "error_message_link_to_group_name_" + (@error_node.id).to_s%>
+		<div class="error_node_expanded_white">
+			<% number = 0%>
+			<% warning = false%>
+			<% for message in Message.where(node_type: "error", node_id: @error_node.id)%>
+			<% number = number + 1%>
+			<% if warning == false%>
+				<div class="mb-2">
+					<%if (number)%10 == 1 && number != 11%>
+						<%= number%>st			 
+					<%elsif (number)%10 == 2  && number != 12%>
+						<%= number%>nd			 
+					<%elsif (number)%10 == 3  && number != 13%>
+						<%= number%>rd
+					<%else%>	
+						<%= number%>th		
+					<%end%>
+					error attempt 
+					<%if message.error_node != "error_message"%>
+						<% warning = true%>
+					<%end%>
+				</div>
+				<div class="error_node_message_text_area error_node_message_text_area_text p-2 mb-2">
+					<div style="font-size: 12px; color: rgb(200,200,200);">
+						<%if message.error_node == "error_message"%>
+							Send Error Message
+						<%elsif message.error_node == "transfer_to_agent"%>
+							Transfer to agent group : <b>Group - 1</b>
+						<%elsif message.error_node == "link_to_node"%>
+							Link to another node : 
+							<b id= <%= error_message_link_to_group_name%>>
+								<%if message.error_node_link_to_node%>
+									<%= truncate(Node.find(message.error_node_link_to_node).name, length: 20) %>
+								<%else%>
+									<span style="color: red;">Please select a node</span>
+								<%end%>
+							</b>
+						<%elsif message.error_node == "exit_message"%>
+							Exit conversation
+						<%end%>
+					</div>
+					<div>
+						<%if message.error_node == "error_message"%>
+							<%= message.error_node_message%>
+						<%elsif message.error_node == "transfer_to_agent"%>
+							<%= message.error_node_transfer_to_agent_message%>
+						<%elsif message.error_node == "link_to_node"%>
+							<%= message.error_node_link_to_message%>
+						<%elsif message.error_node == "exit_message"%>
+							<%= message.error_node_exit_message%>
+						<%end%>
+					</div>
+				</div>
+			<%end%>
+			<%end%>
+			<%if number == 0%>
+				<div>
+					No messages are added here. Click the expand icon to create.
+				</div>
+			<%end%>
+		</div>
+	<% end %>
+</div>
+

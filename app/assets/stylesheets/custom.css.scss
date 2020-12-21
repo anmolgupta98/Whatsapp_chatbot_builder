@@ -1,0 +1,211 @@
+@import 'bootstrap/dist/css/bootstrap';
+
+body{
+	background-color: #f7f2ed;
+}
+.hide {
+ display: none;
+}
+
+.login_background{
+	background-image : url(phone.jpg);
+	background-size : 640px 1000px;
+	background-repeat: no-repeat;
+}
+.createbotdiv{
+	background-color: #3b445b;
+	border-radius: 20px;
+}
+.whitetext{
+	color:white;
+	font-size: 30px;
+}
+.whitetext_two{
+	color:white;
+	font-size: 14px;
+}
+
+.smallfont{
+	font-size: 14px;
+}
+
+.margintopcenter{
+	margin-top: 150px;
+}
+
+.botlist{
+	padding: 10px 0px 10px 0px;
+	margin: 0px 5px 0px 5px;
+	border-radius: 10px;
+	border: 1px solid grey;
+}
+
+.overflow{
+	height : 430px;
+	overflow: auto;
+}
+
+.overflow_two{
+	height : 120px;
+	overflow: auto;
+}
+
+.overflow_three{
+	height : 380px;
+	overflow: auto;
+}
+
+.overflow_four{
+	height : 265px;
+	overflow: auto;
+}
+
+.rowheight{
+	height: 600px;
+}
+.rowheight_two{
+	height: 480px;
+}
+
+.rowheight_three{
+	height: 460px;
+}
+
+.rowheight_four{
+	height: 500px;
+}
+
+#intro_chat{
+	height: 150px;
+	overflow: auto;
+}
+
+.colomn_break{
+	border-right: 1px solid rgb(160, 156, 156);
+}
+
+.colomn_break_two{
+	border-right: 1px solid rgb(160, 156, 156);
+	border-left: 1px solid rgb(160, 156, 156);
+	padding-top: 20px; 
+	padding-bottom: 5px; 
+	padding-right: 5px;
+	padding-left: 5px;
+}
+
+.grey{
+	color: grey;
+}
+
+.heading{
+	font-size: 30px;
+}
+
+.custom_link{
+	color:rgb(90,90,90);
+}
+.deletelink :hover{
+	color: rgb(255,0,0) !important;
+}
+
+.custom_link:hover{
+	color: rgb(0,0,0);
+	text-decoration: none;
+}
+
+.padding_min{
+	padding:5px;
+}
+
+.border{
+	border-style: solid;
+	border-color: rgb(150,150,150) !important;
+	border-width: 1px !important;
+	border-radius: 5px !important;
+}
+
+.custom_margin{
+	margin-top: 200px;
+}
+
+.custom_font{
+	font-size: 15px;
+	color: grey;
+}
+
+.box{
+	background-color: white;
+	margin-top: 20px;
+	border-radius: 30px;
+}
+
+.radio-toolbar input[type="radio"] {  
+    display: none;                                      
+}
+
+.radio-toolbar input[type="radio"] + label {  
+    cursor: pointer;
+    background-color: white;
+    box-shadow: 0px 0px ;                    
+}
+
+.radio-toolbar input[type="radio"]:checked + label{
+     background-color: rgb(200,200,200); 
+     box-shadow: 0px  0px 10px;  
+}
+
+.delete_link{
+	color: red;
+}
+
+.delete_link:hover{
+	color: red;
+	text-decoration: underline;
+}
+
+.editnamefield{
+	border-radius: 25px;
+	width: 150px;
+	border: 1px black solid;
+	padding: 5px;
+}
+
+.button-bot-settings{
+  background-color: white;
+  border: solid 1px #d5d5d5; 
+  border-radius: 7px;
+}
+
+.triggerphrase-botsettings {
+  width: 52px;
+  height: 50px;
+  border-radius: 5px;
+  border: solid 1px #d0d0d0;
+  background-color: var(--white);
+}
+
+.form_trigger_input_bot_settings{
+	width: 29px;
+	border:0px solid #f7f2ed;
+	border-radius: 0;
+  border-bottom: 1px solid #bababa;
+  background-color: #f7f2ed;
+  transition: all .5s ease;
+	padding: 1em .5em .5em;
+	padding-left: 2em;
+	outline:none;
+	margin-bottom:1.5em auto;
+}
+
+.submit-text_bot_settings{
+    border: none;
+    background-color: #f7f2ed;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.33;
+    letter-spacing: normal;
+    margin-left: -14px;
+    color: #3b445b;
+    font-size: 13px;
+}
